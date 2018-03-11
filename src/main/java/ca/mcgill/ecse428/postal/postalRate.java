@@ -10,9 +10,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+/**
+ * @author Jun Young Shin
+ *
+ */
 public class postalRate {
-
-	public static Scanner scanner = new Scanner(System.in);
 	
 	private static Sheet rateCodeLookupSheet;
 	private static Sheet rateSheet;
@@ -30,6 +32,15 @@ public class postalRate {
 	private String senderPostalCode = "";
 	private String receiverPostalCode = "";
 
+	/**
+	 * @param lenght
+	 * @param width
+	 * @param height
+	 * @param weight
+	 * @param sending
+	 * @param toDestonation
+	 * @param type
+	 */
 	public postalRate(double lenght, double width, double height, double weight, String sending, String toDestonation,
 			int type) {
 		this.numLength = lenght;
@@ -41,17 +52,20 @@ public class postalRate {
 		this.receiverPostalCode = toDestonation;
 	}
 	
+	/**
+	 * Default way to create a new class
+	 */
 	public postalRate() {
 		
 	}
 	
+	/**
+	 * @return price of parcel
+	 */
 	public double calculateParcelRate() {
 		
 		String source = this.senderPostalCode;
 		String destination = this.receiverPostalCode;
-		double length = this.numLength;
-		double width = this.numWidth;
-		double height = this.numHeight;
 		double weight = this.numWeight;
 		int postType = this.caseValue;
 		
@@ -64,6 +78,7 @@ public class postalRate {
 
 		int type = 0;
 		// determine where to start looking in the sheet
+	
 		switch(postType) {
 		case 1:
 			type = regularTypeRow;
@@ -89,6 +104,11 @@ public class postalRate {
 		return 0;
 	}
 	
+	/**
+	 * @param source
+	 * @param destination
+	 * @return The postal index. If not found, it will return null.
+	 */
 	private static String findRateCode(String source, String destination) {
 
 		for (Row row : rateCodeLookupSheet) {
@@ -100,6 +120,12 @@ public class postalRate {
 		return null;
 	}
 	
+	/**
+	 * @param rateCode
+	 * @param row
+	 * @param rowInit
+	 * @return The price of the parcel. If not found, it will return 0.
+	 */
 	private static double getParcelRate(String rateCode, int row, int rowInit) {
 		// find the corresponding price for the given weight and rate code
 		for (Cell cell : rateSheet.getRow(rowInit - 2)) {
@@ -110,59 +136,14 @@ public class postalRate {
 		return 0;
 	}
 
-	public void printCases(int caseNumber) {
-
-		String lenght = "";
-		String width = "";
-		String height = "";
-		String weight = "";
-		String postalCodeSend = "";
-		String postalCodeReceive = "";
-		String postalService = "";
-
-		switch (caseNumber) {
-
-		case 1:
-			System.out.print("\nPlease Enter sender's postal code without space: ");
-			postalCodeSend = scanner.nextLine();
-			this.senderPostalCode = postalCodeSend.toLowerCase();
-
-		case 2:
-			System.out.print("\nPlease Enter receiver's postal code without space: ");
-			postalCodeReceive = scanner.nextLine();
-			this.receiverPostalCode = postalCodeReceive.toLowerCase();
-
-		case 3:
-			System.out.print("\nPlease Enter the lenght of the box(cm): ");
-			lenght = scanner.nextLine();
-			this.numLength = Double.parseDouble(lenght);
-
-		case 4:
-			System.out.print("\nPlease Enter the width of the box(cm): ");
-			width = scanner.nextLine();
-			this.numWidth = Double.parseDouble(width);
-
-		case 5:
-			System.out.print("\nPlease Enter the height of the box(cm): ");
-			height = scanner.nextLine();
-			this.numHeight = Double.parseDouble(height);
-
-		case 6:
-			System.out.print("\nPlease Enter the weight of the box(kg): ");
-			weight = scanner.nextLine();
-			this.numWeight = Double.parseDouble(weight);
-
-		case 7:
-			System.out.print("\nPlease Enter number associated with the method of service.");
-			System.out.print("\n1: Regular ; 2: Xpresspost ; 3: Prority");
-			postalService = scanner.nextLine();
-			this.caseValue = Integer.parseInt(postalService);
-		}
-
-		System.out.println("The rate of the package is " + calculateParcelRate() + "$.");
-	}
-
+	/**
+	 * @param length
+	 * @return boolean
+	 */
 	public boolean setNumLength(String length) {
+		if (length.isEmpty()) {
+			return false;
+		}
 		if (onlyNum(length) != true)
 			return false;
 		double temp = Double.parseDouble(length);
@@ -174,7 +155,14 @@ public class postalRate {
 		return true;
 	}
 
+	/**
+	 * @param width
+	 * @return boolean
+	 */
 	public boolean setNumWidth(String width) {
+		if (width.isEmpty()) {
+			return false;
+		}
 		if (onlyNum(width) != true)
 			return false;
 		double temp = Double.parseDouble(width);
@@ -186,7 +174,14 @@ public class postalRate {
 		return true;
 	}
 
+	/**
+	 * @param height
+	 * @return boolean
+	 */
 	public boolean setNumHeight(String height) {
+		if (height.isEmpty()) {
+			return false;
+		}
 		if (onlyNum(height) != true)
 			return false;
 		double temp = Double.parseDouble(height);
@@ -198,29 +193,41 @@ public class postalRate {
 		return true;
 	}
 
-	public boolean setNumWeight(String weigth) {
-		if (onlyNum(weigth) != true)
+	/**
+	 * @param weight
+	 * @return boolean
+	 */
+	public boolean setNumWeight(String weight) {
+		if (weight.isEmpty()) {
 			return false;
-		double temp = Double.parseDouble(weigth);
+		}
+		if (onlyNum(weight) != true)
+			return false;
+		double temp = Double.parseDouble(weight);
 		if (temp < (double) 0.1)
 			return false;
 		if (temp > (double) 30.0)
 			return false;
-		this.numWeight = Double.parseDouble(weigth);
+		this.numWeight = Double.parseDouble(weight);
 		return true;
 	}
 
+	/**
+	 * @param postalCode
+	 * @return boolean
+	 */
 	public boolean setPostalFrom(String postalCode) {
 		String temp;
-		char temp1 = 0;
-		char temp2 = 0;
 		int j = 0;
+		if (postalCode.isEmpty()) {
+			return false;
+		}
 		temp = postalCode.replaceAll("\\s+", "");
-		temp = temp.toLowerCase();
+		temp = temp.toUpperCase();
 		if (temp.length() == 6) {
 			for (char i : temp.toCharArray()) {
 				if (j == 0) {
-					if (i > (int) 96 && i < (int) 123) {
+					if (i > (int) 64 && i < (int) 91) {
 						j++;
 					} else {
 						return false;
@@ -236,21 +243,26 @@ public class postalRate {
 		} else {
 			return false;
 		}
-		this.senderPostalCode = postalCode;
+		this.senderPostalCode = temp;
 		return true;
 	}
 
+	/**
+	 * @param postalCode
+	 * @return boolean
+	 */
 	public boolean setPostalToo(String postalCode) {
 		String temp;
-		char temp1 = 0;
-		char temp2 = 0;
 		int j = 0;
+		if (postalCode.isEmpty()) {
+			return false;
+		}
 		temp = postalCode.replaceAll("\\s+", "");
-		temp = temp.toLowerCase();
+		temp = temp.toUpperCase();
 		if (temp.length() == 6) {
 			for (char i : temp.toCharArray()) {
 				if (j == 0) {
-					if (i > (int) 96 && i < (int) 123) {
+					if (i > (int) 64 && i < (int) 91) {
 						j++;
 					} else {
 						return false;
@@ -266,11 +278,18 @@ public class postalRate {
 		} else {
 			return false;
 		}
-		this.receiverPostalCode = postalCode;
+		this.receiverPostalCode = temp;
 		return true;
 	}
 
+	/**
+	 * @param type
+	 * @return boolean
+	 */
 	public boolean setType(String type) {
+		if (type.isEmpty()) {
+			return false;
+		}
 		if (onlyNum(type) != true)
 			return false;
 		double temp1 = Double.parseDouble(type);
@@ -283,30 +302,69 @@ public class postalRate {
 		return true;
 	}
 
+	/**
+	 * @return length
+	 */
 	public double getLength() {
 		return this.numLength;
 	}
 
+	/**
+	 * @return height
+	 */
 	public double getHeight() {
 		return this.numHeight;
 	}
 
+	/**
+	 * @return width
+	 */
 	public double getWidth() {
 		return this.numWidth;
 	}
 
+	/**
+	 * @return numWeight
+	 */
 	public double getWeight() {
 		return this.numWeight;
 	}
 
+	/**
+	 * @return senderPostalCode
+	 */
 	public String getSenderPostal() {
 		return this.senderPostalCode;
 	}
 
+	/**
+	 * @return receiverPostalCode
+	 */
 	public String getReceiverPostal() {
 		return this.receiverPostalCode;
 	}
+	
+	public boolean girthLength() {
+		
+		double lenght = this.numLength;
+		double height = this.numHeight;
+		double width = this.numWidth;
+		
+		double girthLength1 = (2*lenght)+(2*height)+width;
+		double girthLength2 = (2*lenght)+(2*width)+height;
+		double girthLength3 = (2*height)+(2*width)+lenght;
+		
+		if ((girthLength1 <= 300.0 && girthLength1 > 0.0) || (girthLength2 <= 300.0 && girthLength2 > 0.0) || (girthLength3 <= 300.0 && girthLength3 > 0.0)) {
+			return true;
+		}
+		
+		return false;
+	}
 
+	/**
+	 * @param input
+	 * @return
+	 */
 	public static boolean onlyNum(String input) {
 		for (char i : input.toCharArray()) {
 			if (i < 46 || i > 57 || i == 47) {
@@ -314,15 +372,5 @@ public class postalRate {
 			}
 		}
 		return true;
-	}
-	
-	public static void main(String[] args) {
-
-		postalRate pr = new postalRate();
-
-		System.out.println(
-				"This program will help you find the estimated cost of pour parsel\n according to the Canada posts specifications.");
-		pr.printCases(1);
-		System.exit(0);
 	}
 }

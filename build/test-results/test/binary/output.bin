@@ -1,0 +1,6 @@
+ Girth+lenth invalid tests > 300
+false
+Girth+lenth valid tests < 300
+true
+Girth+lenth valid tests = 300
+true

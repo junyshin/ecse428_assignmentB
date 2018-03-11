@@ -16,6 +16,11 @@ repositories {
     jcenter()
 }
 
+task execute(type:JavaExec) {
+   main = 'ca.mcgill.ecse428.postal.rateApplication'
+   classpath = sourceSets.main.runtimeClasspath
+}
+
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
